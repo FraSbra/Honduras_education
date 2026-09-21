@@ -1,0 +1,57 @@
+
+# ==========================================
+# DATA AND OUTPUT
+# ==========================================
+
+# Ignore all datasets
+/data/
+
+# Ignore all generated outputs:
+# figures, maps, tables, and other results
+/output/
+
+
+# ==========================================
+# R AND RSTUDIO
+# ==========================================
+
+# RStudio user-specific settings
+.Rproj.user/
+
+# R session history and workspace files
+.Rhistory
+.Rapp.history
+.RData
+.RDataTmp
+.Ruserdata
+
+# R temporary files
+*.Rcheck/
+
+
+# ==========================================
+# macOS
+# ==========================================
+
+.DS_Store
+.AppleDouble
+._*
+
+
+# ==========================================
+# LOCAL CONFIGURATION AND CREDENTIALS
+# ==========================================
+
+.Renviron
+.env
+.env.*
+!.env.example
+
+
+# ==========================================
+# TEMPORARY FILES
+# ==========================================
+
+*.tmp
+*.log
+*~
