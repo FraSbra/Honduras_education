@@ -576,7 +576,7 @@ for (group in names(total)) {
       ggplot(
         aes(
           x = year_school,
-          y = .data[[out]],
+          y = .data[[paste0("mean_", out)]],
           color = factor(T_group),
           fill = factor(T_group),
           group = T_group
@@ -625,10 +625,12 @@ for (group in names(total)) {
 #----------------------------
 
 suffixes <- c("", "_w", "_m")
+outcomes <- c("diff", "dr", "canc")
 
-for (x in suffixes) { #Loops over all types of plots, for dr, dr_w e dr_m
+for (out in outcomes) {
+  for (x in suffixes) { #Loops over all types of plots, for dr, dr_w e dr_m
 
-  var <- paste0("diff", x)
+  var <- paste0(out, x)
 
   p <- df |> #Density plot with no 0
   dplyr::filter(.data[[var]] != 0) |>
@@ -887,6 +889,7 @@ ggsave(
   width = NA,
   height = NA
   )
+  }
 }
 
 #----------------------------
@@ -899,14 +902,20 @@ ggsave(
 
 # First table: dropout rates by treatment group
 
-table_1 <- df |>
+outcomes <- c("diff", "dr", "canc")
+
+for (var in outcomes) {
+
+  selected_vars <- c(var, paste0(var, "_w"), paste0(var, "_m"))
+
+  table_1 <- df |>
   filter(
     year_school == 2021,
     !is.na(T_group)
   ) |>
-  select(T_group, diff, diff_w, diff_m) |>
+  select(T_group, all_of(selected_vars)) |>
   pivot_longer(
-    cols = c(diff, diff_w, diff_m),
+    cols = all_of(selected_vars),
     names_to = "variable",
     values_to = "value"
   ) |>
@@ -923,16 +932,17 @@ table_1 <- df |>
   ) |>
   arrange(
     T_group,
-    match(variable, c("dr", "dr_w", "dr_m"))
+    match(variable, selected_vars)
   )
 
-table_1
+  print(table_1)
 
-export_latex_table(
+
+  export_latex_table(
   data = table_1,
-  file = file.path(output, "tables", "table_1.tex"),
-  caption = "Dropout rates by treatment group, 2021",
-  label = "dropout-summary-2021",
+  file = file.path(output, "tables", "summary_stats", paste0(var, "_2021_summary.tex")),
+  caption = paste0(var, " rates by treatment group, 2021"),
+  label = paste0("tab:", var, "-summary-2021"),
   digits = 3,
   column_names = c(
     "Treatment group",
@@ -944,13 +954,15 @@ export_latex_table(
     "Median",
     "25th percentile",
     "75th percentile"
-  ),
+    ),
   align = c("l", "l", rep("r", 7)),
   scale_down = TRUE,
   notes = paste(
     "Statistics are calculated at the center level."
+    )
   )
-)
+  
+
 
 # Second table: comparison between groups 0 and 3
 
@@ -965,9 +977,7 @@ for (x in 1:6) {
     ) |>
     select(
       T_group,
-      diff,
-      diff_w,
-      diff_m,
+      all_of(selected_vars),
       initial_registration,
       initial_registration_w,
       initial_registration_m,
@@ -999,9 +1009,9 @@ for (x in 1:6) {
       match(
         variable,
         c(
-          "diff",
-          "diff_w",
-          "diff_m",
+          var,
+          paste0(var, "_w"),
+          paste0(var, "_m"),
           "initial_registration",
           "initial_registration_w",
           "initial_registration_m",
@@ -1016,9 +1026,9 @@ for (x in 1:6) {
 
   export_latex_table(
   data = table_[[x]],
-  file = file.path(output, "tables", paste0("summary_stats_", x, ".tex")),
-  caption = paste0("Summary Statistics, 2021: Control vs. Treatment Group ", x),
-  label = paste0("summary-stat-2021-", x),
+  file = file.path(output, "tables", "summary_stats", paste0("balance_", var, "group_", x, ".tex")),
+  caption = paste0("Balance Table, 2021: Control vs. Treatment Group ", x),
+  label = paste0("tab:balance-", var, "-2021-group-", x),
   digits = 3,
   column_names = c(
     "Outcome",
@@ -1035,7 +1045,7 @@ for (x in 1:6) {
 )
 
 }
-
+}
 
 
 
