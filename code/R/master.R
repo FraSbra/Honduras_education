@@ -17,6 +17,7 @@
 #install.packages("purrr")
 #install.packages("collapse")
 #install.packages(c("knitr", "kableExtra"))  #For .tex tables
+#install.packages("fixest") #For TWFE 
 
 
 library(readxl)
@@ -31,6 +32,7 @@ library(purrr)
 library(collapse)
 library(knitr)
 library(kableExtra)
+library(fixest)
 
 
 

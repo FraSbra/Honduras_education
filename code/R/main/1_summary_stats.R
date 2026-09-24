@@ -6,12 +6,6 @@
 #Load data
 #----------------------
 df <- read.csv(file.path(data, "processed", "csv", "center_level.csv")) #Treatment data
-
-#Remove "Second date" variable
-df$second_date <- NULL
-
-#Snap for inspecting df
-snap <- head(df, 1000)
   
 #----------------------
 # Collapse at center x T_group level
@@ -897,7 +891,7 @@ ggsave(
 #----------------------------
 
 #--------------------------------------------------
-# Summary statistics for 2021
+# Summary statistics for 2022
 #--------------------------------------------------
 
 # First table: dropout rates by treatment group
@@ -910,7 +904,7 @@ for (var in outcomes) {
 
   table_1 <- df |>
   filter(
-    year_school == 2021,
+    year_school == 2022,
     !is.na(T_group)
   ) |>
   select(T_group, all_of(selected_vars)) |>
@@ -940,9 +934,9 @@ for (var in outcomes) {
 
   export_latex_table(
   data = table_1,
-  file = file.path(output, "tables", "summary_stats", paste0(var, "_2021_summary.tex")),
-  caption = paste0(var, " rates by treatment group, 2021"),
-  label = paste0("tab:", var, "-summary-2021"),
+  file = file.path(output, "tables", "summary_stats", paste0(var, "_2022_summary.tex")),
+  caption = paste0(var, " rates by treatment group, 2022"),
+  label = paste0("tab:", var, "-summary-2022"),
   digits = 3,
   column_names = c(
     "Treatment group",
@@ -964,15 +958,15 @@ for (var in outcomes) {
   
 
 
-# Second table: comparison between groups 0 and 3
+  # Second table: comparison between groups 0 and 3
 
-table_ <- vector("list", 6)
+  table_ <- vector("list", 6)
 
-for (x in 1:6) {
+  for (x in 1:6) {
 
   table_[[x]] <- df |>
     filter(
-      year_school == 2021,
+      year_school == 2022,
       T_group %in% c(0, x)
     ) |>
     select(
@@ -1027,8 +1021,8 @@ for (x in 1:6) {
   export_latex_table(
   data = table_[[x]],
   file = file.path(output, "tables", "summary_stats", paste0("balance_", var, "group_", x, ".tex")),
-  caption = paste0("Balance Table, 2021: Control vs. Treatment Group ", x),
-  label = paste0("tab:balance-", var, "-2021-group-", x),
+  caption = paste0("Balance Table, 2022: Control vs. Treatment Group ", x),
+  label = paste0("tab:balance-", var, "-2022-group-", x),
   digits = 3,
   column_names = c(
     "Outcome",
@@ -1042,23 +1036,13 @@ for (x in 1:6) {
     "Statistics are calculated at the center level. ",
     "Treatment group ", x, " is compared with the control group."
   )
-)
+  )
 
-}
+  }
 }
 
 
 
 #TO DO
-# - export summary tables in latex
-# - loops for also other tables
-# - summary stats by group, for treatment years
-# - graphs of only groups of interests
-# - Adjust graphs --> praticamente vorrei che aumentasse lo spazio sulle x (i.e. rendere il png un rettangoloo orizzontale e non verticale)
-# - trasforma grafici mean dropout rate in loops
-#     cosi da fare in una volta sola 3x6 grafici
-#Might need to exclude schools with 100% dropout in some year --> i guess it means the school closed. Check if appears the following year.
-
-
-#Ho fatto loop per grafici, ora va fatto per le tabelle di summary stats
-  
+# - al momento tutte le summary sono fatte con 2022 come riferimento. Per alcuni gruppi, il riferimento è 2022 o 2023 --> cambia
+#Might need to exclude schools with 100% dropout in some year --> i guess it means the school closed. Check if appears the following year.  
