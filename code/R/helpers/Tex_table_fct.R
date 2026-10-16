@@ -111,10 +111,14 @@ make_latex_table <- function(
   if (!is.null(notes) && length(notes) > 0L) {
 	table <- kableExtra::footnote(
 	  table,
-	  general = as.character(notes),
-	  general_title = "Note: ",
+	  general = paste0(
+      "Note: ",
+      paste(as.character(notes), collapse = " ")
+      ),
+    general_title = "",
 	  footnote_as_chunk = TRUE,
 	  threeparttable = !longtable,
+		fixed_small_size = TRUE,
 	  escape = escape
 	)
   }

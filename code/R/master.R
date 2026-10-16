@@ -46,6 +46,7 @@ main <- "/Users/fra/Library/CloudStorage/GoogleDrive-francesco.sbrana@carloalber
       helper <- file.path(R, "helpers")
       cleaning <- file.path(R, "data_cleaning")
       analysis <- file.path(R, "main")
+    python <- file.path(code, "python")
 
   data <- file.path(main, "data")
 
@@ -61,6 +62,7 @@ source(file.path(cleaning, "1_school_datasets_cleaning.R"))
 source(file.path(cleaning, "2_enrollment_duplicates_balancing.R"))
 source(file.path(cleaning, "2.1_enrollment_treatment_merging.R"))
 source(file.path(cleaning, "3_dataset_analysis_creation.R"))
+source(file.path(cleaning, "6_school_characteristics_convertion.R"))
 source(file.path(cleaning, "4_borders_cleaning.R"))
 source(file.path(cleaning, "5_borders_treatment_merging.R"))
 

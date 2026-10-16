@@ -12,7 +12,7 @@ snap <- head(df_all, 1000)
 #Loop: 3 main outcomes (diff, dr, canc) * 3 outcomes versions (total, w, m) * 2 datasets (con e senza dr = 1)
 #Different loops depending on the T_groups: 1 alone, 2-3-4, then 5-6.
 
-for (x in 3:3) {
+for (x in 2:4) {
 
   df_x <- df_all |> 
 	filter(
@@ -111,16 +111,20 @@ for (x in 3:3) {
   ref.line = -1
   )
 
+  # --------------------------------
+  # 5. Event-study graph, merged plots
+  # --------------------------------
+  plot_colors <- c("#1B9E77", "#7570B3", "#D95F02")
+  plot_symbols <- c(16, 16, 16)
 
-
-  
-
-}
-
-  
-
-plot_colors <- c("black", "#0072B2", "#D55E00")
-  plot_symbols <- c(16, 17, 15)
+  old_par <- par(
+  mar = c(7, 5, 4, 1),  # Extra bottom space for legend
+  bty = "n",            # Remove surrounding box
+  las = 1,              # Horizontal axis tick labels
+  tcl = 0,              # Remove axis tick marks
+  col.axis = "grey40",
+  cex.axis = 0.9
+  )
 
   iplot(
   objects = list(
@@ -130,19 +134,53 @@ plot_colors <- c("black", "#0072B2", "#D55E00")
   ),
   col = plot_colors,
   pch = plot_symbols,
-  sep = 0.15,
+  pt.cex = 0.9,
+  sep = 0.07,           # Keep estimates within each year closer
   ci_level = 0.95,
+  ci.width = "0.4%",    # Shorter confidence-interval caps
+  ci.lwd = 1.2,
+  grid = TRUE,
+  grid.par = list(col = "grey92", lty = 1, lwd = 1),
+  zero.par = list(col = "grey50", lty = 2, lwd = 1),
+  ref.line = -1,
+  ref.line.par = list(col = "grey40", lty = 3, lwd = 1),
   xlab = "Years relative to treatment",
   ylab = "Effect on dropout rate",
-  main = paste0("Dynamic TWFE: Treatment Group ", x),
-  ref.line = -1
+  main = ""
+  )
+
+  # Left-aligned title and subtitle
+  mtext(
+  paste0("Dynamic TWFE: Treatment Group ", x),
+  side = 3, line = 2, adj = 0, font = 2, cex = 1.1
+  )
+  mtext(
+  "Event-study coefficients; 95% confidence intervals",
+  side = 3, line = 0.6, adj = 0, cex = 0.9
   )
 
   legend(
-  "topleft",
+  "bottom",
+  inset = c(0, -0.55),
   legend = c("Total", "Male", "Female"),
   col = plot_colors,
   pch = plot_symbols,
-  bty = "n"
+  horiz = TRUE,
+  bty = "n",
+  xpd = NA,
+  cex = 0.9
   )
 
+  par(old_par)
+  
+
+}
+
+
+
+#At the moment the TWFE is looping only among the 3 groups (2,3,4)
+#  and the 3 outcomes (total, m and f).
+#We miss
+# - diff and canc
+# - tables for TWFE static and Dynamic (possibly grouped in the least number of table possible)
+# - dataset with dr=1 removed

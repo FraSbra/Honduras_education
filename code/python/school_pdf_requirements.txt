@@ -1,0 +1,2 @@
+# Use Python 3.10-3.14. This is the same PyMuPDF version specified earlier.
+PyMuPDF==1.26.7

@@ -411,6 +411,12 @@ for (x in 1:3) {
   ) +
   geom_line(linewidth = 0.8) +
   geom_point() +
+    geom_vline(
+  xintercept = 2022,
+  linetype = "dashed",
+  colour = "grey40",
+  linewidth = 0.6
+) +
   scale_color_manual(
     name = "Treatment group",
     values = group_colors,
@@ -454,6 +460,12 @@ for (x in 1:3) {
   ) +
   geom_line(linewidth = 0.8) +
   geom_point() +
+    geom_vline(
+  xintercept = 2022,
+  linetype = "dashed",
+  colour = "grey40",
+  linewidth = 0.6
+) +
   scale_color_manual(
     name = "Treatment group",
     values = group_colors,
@@ -496,6 +508,12 @@ for (x in 1:3) {
   ) +
   geom_line(linewidth = 0.8) +
   geom_point() +
+    geom_vline(
+  xintercept = 2022,
+  linetype = "dashed",
+  colour = "grey40",
+  linewidth = 0.6
+) +
   scale_color_manual(
     name = "Treatment group",
     values = group_colors,
@@ -583,6 +601,12 @@ for (group in names(total)) {
       ) +
       geom_line(linewidth = 0.8) +
       geom_point() +
+      geom_vline(
+  xintercept = 2022,
+  linetype = "dashed",
+  colour = "grey40",
+  linewidth = 0.6
+) +
       scale_color_manual(
         name = "Treatment group",
         values = group_colors,
@@ -606,8 +630,9 @@ for (group in names(total)) {
       plot = p,
       device = "jpeg",
       scale = 1,
-      width = NA,
-      height = NA
+      width = 10,
+      height = 5,
+      units = "in"
     )
     
     }

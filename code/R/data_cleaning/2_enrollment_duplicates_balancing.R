@@ -288,7 +288,9 @@ for (i in 1:nrow(school)) {
 write.csv(school, file.path(data, "processed", "csv", "enrollment_cleaned_flagged.csv"), row.names = FALSE) 
 
 #Clear Environment
-rm(list = setdiff(ls(), c("main", "code", "R", "cleaning", "analysis", "data", "output", "start_time"))) #Removes everything except what needed
+rm(list = setdiff(ls(), 
+          c("main", "code", "R", "python", "cleaning", "analysis",
+            "data", "output", "start_time", "helper", "export_latex_table", "make_latex_table"))) #Removes everything except what needed
 
 
 

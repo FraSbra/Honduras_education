@@ -62,6 +62,7 @@ sum_vars <- c(
 	"repetition"
 )
 
+#Main Dataset
 df_center_level <- collap(
 	df_balanced,
 	~ year_school + center_code,
@@ -71,6 +72,27 @@ df_center_level <- collap(
 	)
   )
 
+#Age Level
+df_age_level <- collap(
+	df_balanced,
+	~ year_school + center_code + age_students,
+	custom = list(
+      ffirst = first_vars, #take first value
+	    fsum = sum_vars     #take sum
+	  )
+  )
+
+#Grade Level
+df_grade_level <- collap(
+	df_balanced,
+	~ year_school + center_code + grade,
+	custom = list(
+      ffirst = first_vars, #take first value
+	    fsum = sum_vars     #take sum
+	  )
+  )
+
+
 
 #----------------------------
 # Create Variables for Analysis
@@ -79,12 +101,19 @@ df_center_level <- collap(
 #and create treatment (T) status, 1 = treated
 #and create groups (T_group), 0 = control and then ordered as the actual treatment
 
-df_center_level <- df_center_level |>
-  mutate(
-    diff = if_else( #Total dropout rate
-      initial_registration == 0,
-      NA_real_,
-      (initial_registration - final_registration) / initial_registration
+datasets <- list(
+  df_center_level = df_center_level,
+  df_age_level = df_age_level,
+  df_grade_level = df_grade_level
+)
+
+datasets <- lapply(datasets, function(x) {
+  x %>%
+    mutate(
+      diff = if_else( #Total dropout rate
+        initial_registration == 0,
+        NA_real_,
+        (initial_registration - final_registration) / initial_registration
     ),
     diff_w = if_else( 
       initial_registration_w == 0,
@@ -126,6 +155,21 @@ df_center_level <- df_center_level |>
       NA_real_,
       (cancellations_m) / initial_registration_m
     ),
+    reg = if_else(
+      initial_registration > 0,
+      log(initial_registration),
+      NA_real_
+      ),
+    reg_m = if_else(
+      initial_registration_m > 0,
+      log(initial_registration_m),
+      NA_real_
+      ),
+    reg_w = if_else(
+      initial_registration_w > 0,
+      log(initial_registration_w),
+      NA_real_
+      ),
     T = ifelse( #gen treatment Y/N var
       treat_1 == 1 | treat_2 == 1 | treat_3 == 1 |
         treat_4 == 1 | treat_5 == 1 | treat_6 == 1,
@@ -141,13 +185,21 @@ df_center_level <- df_center_level |>
     public = if_else(admin_type == "gubernamental", 1L, 0L), #Numeric public vs private
     urban = if_else(area_type == "urbana", 1L, 0L) #Numeric rural vs urban
   )
+})
 
+df_center_level <- datasets$df_center_level
+df_age_level <- datasets$df_age_level
+df_grade_level <- datasets$df_grade_level
 
 #Save
 write.csv(df_center_level, file = file.path(data, "processed", "csv", "center_level.csv"), row.names = FALSE)
+write.csv(df_age_level, file = file.path(data, "processed", "csv", "age_level.csv"), row.names = FALSE)
+write.csv(df_grade_level, file = file.path(data, "processed", "csv", "grade_level.csv"), row.names = FALSE)
 
 #Clean workspace
-rm(list = setdiff(ls(), c("main", "code", "R", "cleaning", "analysis", "data", "output", "start_time"))) #Removes everything except what needed
+rm(list = setdiff(ls(), 
+          c("main", "code", "R", "python", "cleaning", "analysis", "data", 
+            "output", "start_time", "helper", "export_latex_table", "make_latex_table"))) #Removes everything except what needed
 
 
 
