@@ -191,8 +191,43 @@ df_center_level <- datasets$df_center_level
 df_age_level <- datasets$df_age_level
 df_grade_level <- datasets$df_grade_level
 
+
+#----------------------------
+# Merge with covariates
+#----------------------------
+
+#0. Load dataset
+covariates <- read.csv(file.path(data, "processed", "csv", "school_covariates_center_level.csv"))
+
+
+#1. Setting up
+setDT(df_center_level)
+setDT(covariates)
+
+#2. Mark rows that exist in treat before join (to check quality of merging later)
+covariates[, in_covariates := 1L]
+
+#3. Actual merge
+merged <- covariates[df_center_level, on = .(center_code)]   # left join like all.x=TRUE
+
+#4. If 0, merged correctly
+table(is.na(merged$in_covariates))
+
+# 5. Check number of observations
+nrow(df_center_level)
+nrow(merged)
+
+#----------------------------
+# Remove useless vars
+#----------------------------
+
+vars_to_drop <- c("departamento", "municipio", "ninas", "ninos", "total", "in_covariates")
+
+merged[, (vars_to_drop) := NULL]
+
+
 #Save
-write.csv(df_center_level, file = file.path(data, "processed", "csv", "center_level.csv"), row.names = FALSE)
+write.csv(merged, file = file.path(data, "processed", "csv", "center_level.csv"), row.names = FALSE)
 write.csv(df_age_level, file = file.path(data, "processed", "csv", "age_level.csv"), row.names = FALSE)
 write.csv(df_grade_level, file = file.path(data, "processed", "csv", "grade_level.csv"), row.names = FALSE)
 
